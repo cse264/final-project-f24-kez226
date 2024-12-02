@@ -13,6 +13,17 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET all reviews
+router.get('/', async (req, res) => {
+    const movieTitle = req.body.movieTitle
+    try {
+        const reviews = await Review.find({movieTitle: movieTitle});
+        res.json(reviews);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 // POST create a new review
 router.post('/', async (req, res) => {
     const { userID, movieTitle, reviewBody, reviewRating} = req.body;
