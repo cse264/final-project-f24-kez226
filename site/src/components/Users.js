@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import '../styles/Users.css';
 
-const Users = ({ setUserID }) => {  // Accept setUserID from App.js
+const Users = ({ setUserID }) => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [newUser, setNewUser] = useState({
@@ -15,9 +15,10 @@ const Users = ({ setUserID }) => {  // Accept setUserID from App.js
         password: ''
     });
     const [error, setError] = useState('');
+    const [displayUser, setDisplayUser] = useState(false);  // State to control user list display
 
-    useEffect(() => {
-        // Fetch users
+    // Function to fetch users from the API
+    const fetchUsers = () => {
         fetch('http://localhost:3000/api/users', {
             method: 'GET',
             headers: {
@@ -33,10 +34,15 @@ const Users = ({ setUserID }) => {  // Accept setUserID from App.js
                 console.error('Error fetching users:', error);
                 setLoading(false);
             });
+    };
+
+    // Fetch users when the component mounts or when displayUser changes
+    useEffect(() => {
+        fetchUsers();
     }, []);
 
-     // Handle input changes for creating new user
-     const handleNewUserChange = (e) => {
+    // Handle input changes for creating new user
+    const handleNewUserChange = (e) => {
         const { name, value } = e.target;
         setNewUser({
             ...newUser,
@@ -52,7 +58,6 @@ const Users = ({ setUserID }) => {  // Accept setUserID from App.js
             [name]: value
         });
     };
-
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -75,6 +80,11 @@ const Users = ({ setUserID }) => {  // Accept setUserID from App.js
             if (response.ok) {
                 setUserID(data.userID); // Store userID on successful login
                 setError('');
+                console.log(data.accountType)
+                if (data.accountType === 'admin') {
+                    setDisplayUser(true);  // Show users list if admin
+                    fetchUsers();  // Refetch users after successful login
+                }
                 alert('Login successful!');
             } else {
                 setError(data.message || 'Error logging in');
@@ -85,8 +95,8 @@ const Users = ({ setUserID }) => {  // Accept setUserID from App.js
         }
     };
 
-     // Handle user creation form submission
-     const handleSubmit = async (e) => {
+    // Handle user creation form submission
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!newUser.name || !newUser.email || !newUser.password) {
@@ -121,20 +131,10 @@ const Users = ({ setUserID }) => {  // Accept setUserID from App.js
 
     return (
         <div className="users-container">
-            {/* <h1 className="users-title">Users List</h1>
-            <ul className="users-list">
-                {users.map(user => (
-                    <li key={user._id} className="user-item">
-                        <div className="user-info">
-                            <p className="user-name">{user.name}</p>
-                            <p className="user-email">{user.email}</p>
-                        </div>
-                    </li>
-                ))}
-            </ul> */}
+            
 
-              {/* Form Section for Creating New User */}
-              <Box component="form" onSubmit={handleSubmit} sx={{ marginBottom: 2 }}>
+            {/* Form Section for Creating New User */}
+            <Box component="form" onSubmit={handleSubmit} sx={{ marginBottom: 2 }}>
                 <h2 className="centered-text">Create Your Account</h2>
                 {error && <Typography color="error">{error}</Typography>}
                 <TextField
@@ -177,7 +177,6 @@ const Users = ({ setUserID }) => {  // Accept setUserID from App.js
                 </Button>
             </Box>
 
-
             {/* Login Form Section */}
             <Box component="form" onSubmit={handleLogin} sx={{ marginBottom: 2 }}>
                 <h2 className="centered-text">Login</h2>
@@ -190,7 +189,7 @@ const Users = ({ setUserID }) => {  // Accept setUserID from App.js
                     type="email"
                     name="email"
                     value={loginCredentials.email}
-                    onChange={e => setLoginCredentials({ ...loginCredentials, email: e.target.value })}
+                    onChange={handleLoginChange}
                 />
                 <TextField
                     label="Password"
@@ -200,7 +199,7 @@ const Users = ({ setUserID }) => {  // Accept setUserID from App.js
                     type="password"
                     name="password"
                     value={loginCredentials.password}
-                    onChange={e => setLoginCredentials({ ...loginCredentials, password: e.target.value })}
+                    onChange={handleLoginChange}
                 />
                 <Button type="submit" variant="contained" sx={{
                     backgroundColor: 'red',
@@ -212,6 +211,21 @@ const Users = ({ setUserID }) => {  // Accept setUserID from App.js
                     Login
                 </Button>
             </Box>
+            {displayUser && (
+                <div>
+                    <h1 className="users-title">Users List</h1>
+                    <ul className="users-list">
+                        {users.map(user => (
+                            <li key={user._id} className="user-item">
+                                <div className="user-info">
+                                    <p className="user-name">{user.name}</p>
+                                    <p className="user-email">{user.email}</p>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
         </div>
     );
 };

@@ -9,7 +9,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import InfoIcon from '@mui/icons-material/Info';
 
-function MovieList({ title, movies }) {
+function MovieList({ userID, title, movies }) {
     const [expandedMovie, setExpandedMovie] = useState(null); // To store the selected movie
 
     const handleMovieClick = (movie) => {
@@ -78,7 +78,7 @@ function MovieList({ title, movies }) {
                         {/* Reviews Section */}
                         <div className="movie-reviews">
                             <h3>Reviews</h3>
-                            <Reviews movieId={expandedMovie.id} />
+                            <Reviews userID = {userID} movieTitle = {expandedMovie.title} movieID={expandedMovie.id} />
                         </div>
 
                     </div>

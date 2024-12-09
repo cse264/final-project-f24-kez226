@@ -1,13 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
-import Navbar from './components/Navbar';
 import HeroSlider from './components/HeroSlider';
 import MovieList from './components/MovieList';
 import Users from './components/Users';
-import Reviews from './components/Reviews';
 import WatchList from './components/WatchList';
 import { fetchMovies } from './api/tmdb';
 import './App.css';
-
 
 function App() {
     const homeRef = useRef(null);
@@ -15,8 +12,11 @@ function App() {
     const watchlistRef = useRef(null);
     const usersRef = useRef(null);
 
+    // Scroll to section function
     const scrollToSection = (ref) => {
-        ref.current.scrollIntoView({ behavior: 'smooth' });
+        if (ref.current) {
+            ref.current.scrollIntoView({ behavior: 'smooth' });
+        }
     };
 
     const [heroMovies, setHeroMovies] = useState([]);
@@ -53,30 +53,47 @@ function App() {
     return (
         <div className="App">
             {/* Navbar for scrolling to sections */}
-            <Navbar/>
+            <div className="nav-wrapper">
+                <div className="container">
+                    <div className="nav">
+                        <a href="/" className="logo">
+                            <i className="fa fa-popcorn"></i>
+                            Pop<span className="main-color">Corn</span>Path
+                        </a>
+
+                        {/* Navigation Links */}
+                        <nav className="navbar">
+                            <ul className="nav-links">
+                                <li onClick={() => scrollToSection(homeRef)}>Home</li>
+                                <li onClick={() => scrollToSection(reviewsRef)}>Movies</li>
+                                <li onClick={() => scrollToSection(reviewsRef)}>Reviews</li>
+                                <li onClick={() => scrollToSection(usersRef)}>Admin</li>
+                                <li onClick={() => scrollToSection(watchlistRef)}>Watchlist</li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
             {/* Sections */}
             <section ref={homeRef} className="section home">
                 <HeroSlider movies={heroMovies} />
             </section>
 
             <section ref={reviewsRef} className="section reviews">
-                <MovieList title="Popular Movies" movies={popularMovies} />
+                <MovieList title="Popular Movies" userID={userID} movies={popularMovies} />
             </section>
 
             <section ref={watchlistRef} className="section watchlist">
-                <MovieList title="Now Playing" movies={nowPlayingMovies} />
-                <MovieList title="Upcoming Movies" movies={upcomingMovies} />
+                <MovieList title="Now Playing" userID={userID} movies={nowPlayingMovies} />
+                <MovieList title="Upcoming Movies" userID={userID} movies={upcomingMovies} />
             </section>
 
             <section ref={usersRef} className="section users">
                 <Users setUserID={setUserID} />
             </section>
 
-            <section ref={usersRef} className="section reviews">
-                <Reviews />
-            </section>
-
-            <section ref={usersRef} className="section watchlist">
+            <section ref={watchlistRef} className="section watchlist">
                 <WatchList userID={userID} />
             </section>
         </div>
