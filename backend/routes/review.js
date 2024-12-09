@@ -153,11 +153,11 @@ router.delete('/', async(req,res) => {
 
 //delete all user reviews
 router.delete('/:userID', async(req,res) => {
-    const userID = req.params
+    const userID = req.params.userID
     const currUser = req.body.userID
     if (userID === currUser){
         try {
-            const deletedReview = await Review.delete(
+            const deletedReview = await Review.deleteMany(
                 {userID: userID}
             );
             if (deletedReview.deletedCount != 0)
@@ -199,7 +199,7 @@ router.delete('/:userID/:movieID', async(req,res) => {
     const currUser = req.body.userID
     if (userID == currUser){
         try {
-            const deletedReview = await Review.delete(
+            const deletedReview = await Review.deleteMany(
                 {userID: userID, movieID: movieID}
             );
             if (deletedReview.deletedCount != 0)
