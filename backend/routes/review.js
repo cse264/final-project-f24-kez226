@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET all reviews by movieID
-router.get('/:movieID', async (req, res) => {
+router.get('/movieID/:movieID', async (req, res) => {
     const movieID = req.params.movieID
     try {
         const reviews = await Review.find({movieID: movieID});
@@ -36,7 +36,7 @@ router.get('/:userID', async (req, res) => {
 });
 
 // GET all reviews by userID and movieID
-router.get('/:userID&movieID', async (req, res) => {
+router.get('/:userID/:movieID', async (req, res) => {
     const userID = req.params.userID
     const movieID = req.params.movieID
     try {
@@ -113,19 +113,21 @@ router.delete('/', async(req,res) => {
 
     //add smth to check if the user is an admin
     let user = await User.findOne({userID: userID})
-    if (user.accountType === "admin"){
-        try {
-            const deletedReview = await Review.deleteOne(
-                {_id: _id}
-            );
-            if (deletedReview.deletedCount != 0)
-                res.status(201).json({message: "Review deleted by admin."});
-            else
-                res.status(201).json({message: "No review found."});
-        } catch (err) {
-            res.status(500).json({ message: err.message });
+    try{
+        if (user.accountType === "admin"){
+            try {
+                const deletedReview = await Review.deleteOne(
+                    {_id: _id}
+                );
+                if (deletedReview.deletedCount != 0)
+                    res.status(201).json({message: "Review deleted by admin."});
+                else
+                    res.status(201).json({message: "No review found."});
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }   
         }
-    }
+
     else{
         try {
             const deletedReview = await Review.deleteOne(
@@ -139,6 +141,10 @@ router.delete('/', async(req,res) => {
             res.status(500).json({ message: err.message });
         }
     }
+    }
+    catch(err){
+        res.status(400).json({message: "No user found"})
+    }
 })
 
 //below routes need a way to check if the userId specified is the actual user
@@ -148,7 +154,7 @@ router.delete('/', async(req,res) => {
 router.delete('/:userID', async(req,res) => {
     const userID = req.params
     const currUser = req.body.userID
-    if (userID == currUser){
+    if (userID === currUser){
         try {
             const deletedReview = await Review.delete(
                 {userID: userID}
@@ -163,27 +169,30 @@ router.delete('/:userID', async(req,res) => {
     }
     else{
         let user = await User.findOne({userID: userID})
-        if (user.accountType === "admin"){
-            try {
-                const deletedReview = await Review.delete(
-                    {userID: userID}
-                );
-                if (deletedReview.deletedCount != 0)
-                    res.status(201).json({message: "Reviews deleted."});
-                else
-                    res.status(201).json({message: "No review found."});
-            } catch (err) {
-                res.status(500).json({ message: err.message });
+        try{    if (user.accountType === "admin"){
+                try {
+                    const deletedReview = await Review.delete(
+                        {userID: userID}
+                    );
+                    if (deletedReview.deletedCount != 0)
+                        res.status(201).json({message: "Reviews deleted."});
+                    else
+                        res.status(201).json({message: "No review found."});
+                } catch (err) {
+                    res.status(500).json({ message: err.message });
+                }
             }
-        }
-        else{
-            res.status(400).json({message: "Can't delete another user's reviews"})
+            else{
+                res.status(400).json({message: "Can't delete another user's reviews"})
+            }
+        } catch(err){
+            res.status(400).json({message: "No user found"})
         }
     }
 })
 
 //delete all movieID reviews by user
-router.delete('/:userID&movieID', async(req,res) => {
+router.delete('/:userID/:movieID', async(req,res) => {
     const userID = req.params.userID
     const movieID = req.params.movieID
     const currUser = req.body.userID
@@ -201,22 +210,26 @@ router.delete('/:userID&movieID', async(req,res) => {
         }
     }
     else{
-        let user = await User.findOne({userID: userID})
-        if (user.accountType === "admin"){
-            try {
-                const deletedReview = await Review.delete(
-                    {userID: userID, movieID: movieID}
-                );
-                if (deletedReview.deletedCount != 0)
-                    res.status(201).json({message: "Reviews deleted."});
-                else
-                    res.status(201).json({message: "No review found."});
-            } catch (err) {
-                res.status(500).json({ message: err.message });
+        try{   
+            let user = await User.findOne({userID: userID})
+            if (user.accountType === "admin"){
+                try {
+                    const deletedReview = await Review.delete(
+                        {userID: userID, movieID: movieID}
+                    );
+                    if (deletedReview.deletedCount != 0)
+                        res.status(201).json({message: "Reviews deleted."});
+                    else
+                        res.status(201).json({message: "No review found."});
+                } catch (err) {
+                    res.status(500).json({ message: err.message });
+                }
             }
-        }
-        else{
-            res.status(400).json({message: "Can't delete another user's reviews"})
+            else{
+                res.status(400).json({message: "Can't delete another user's reviews"})
+            }
+        } catch(err){
+            res.status(400).json({message: "No user found"})
         }
     }
 })
