@@ -1,0 +1,180 @@
+/* HeroSlider.css */
+
+/* Container for the entire slider */
+.hero-slider {
+    position: relative;
+    width: 100%;
+    height: 500px; /* Set the height of the slider */
+    overflow: hidden; /* Prevent overflow */
+}
+
+/* Styling for each slide item */
+.hero-slide-item {
+    position: relative;
+    display: flex; /* Flexbox to align image and text side by side */
+    align-items: center;
+    height: 100%; 
+    color: white;
+}
+
+/* Image styling */
+.hero-slide-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure the image covers the entire area */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0; /* Ensure the image stays behind the text */
+}
+
+/* Overlay to darken the image */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+    z-index: 1; /* Place above the image but below text */
+}
+
+/* Text content container (title, description, rating) */
+.hero-slide-item-content {
+    position: relative;
+    z-index: 2;
+    padding: 20px;
+    max-width: 600px; /* Limit the width of the content area */
+    text-align: left; /* Align the text to the left */
+}
+
+/* Title style */
+.movie-title {
+    font-size: 3rem; /* Larger title size */
+    font-weight: bold;
+    margin-bottom: 15px;
+    animation: topDown 0.8s ease-out forwards; /* Apply animation */
+    animation-delay: 0.3s; /* Delay for smooth animation */
+}
+
+/* Description text style */
+.movie-description {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    animation: topDown 0.8s ease-out forwards;
+    animation-delay: 0.5s; /* Delay for smooth animation */
+}
+
+/* Rating styling */
+.movie-rating {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 10px;
+    animation: topDown 0.8s ease-out forwards;
+    animation-delay: 0.7s; /* Delay for the rating */
+}
+
+.movie-rating i {
+    color: #FFD700; /* Gold color for star */
+    margin-right: 10px;
+}
+
+/* Keyframe animation for sliding text */
+@keyframes topDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Custom Slick Dots for navigation */
+.slick-dots {
+    bottom: 30px;
+}
+
+.slick-dots li button:before {
+    color: #fff; /* White dots for navigation */
+}
+
+/* Responsive Design for smaller screens */
+@media (max-width: 768px) {
+    /* Stack image and content vertically */
+    .hero-slide-item {
+        flex-direction: column; /* Stack image and text on top of each other */
+        height: auto; /* Adjust height on mobile */
+    }
+
+    .hero-slide-item-content {
+        max-width: 100%; /* Full width on mobile screens */
+        padding: 10px; /* Less padding on mobile */
+    }
+
+    .movie-title {
+        font-size: 2rem; /* Smaller title for mobile */
+    }
+
+    .movie-description {
+        font-size: 1rem; /* Smaller description for mobile */
+    }
+
+    .movie-rating {
+        font-size: 1rem; /* Smaller rating font for mobile */
+    }
+}
+
+/* Responsive Design for larger iMac screens (1440px to 2560px) */
+@media (min-width: 1440px) and (max-width: 2560px) {
+    /* Make sure the content looks nice on large screens */
+    .hero-slide-item {
+        flex-direction: row; /* Align the image and content side by side */
+        height: 600px; /* Adjust height for larger screens */
+    }
+
+    .hero-slide-item-content {
+        padding: 40px;
+        max-width: 800px; /* Increase content width for large screens */
+    }
+
+    .movie-title {
+        font-size: 4rem; /* Increase title size */
+    }
+
+    .movie-description {
+        font-size: 1.3rem; /* Slightly larger description text */
+    }
+
+    .movie-rating {
+        font-size: 1.3rem; /* Increase rating font size */
+    }
+
+    .slick-dots {
+        bottom: 50px; /* Move dots down a bit more on large screens */
+    }
+}
+
+/* Larger desktop (e.g., 4K displays) */
+@media (min-width: 2560px) {
+    /* For even larger screens, ensure everything remains proportionate */
+    .hero-slide-item-content {
+        padding: 50px;
+        max-width: 900px; /* Even larger content width for extra large screens */
+    }
+
+    .movie-title {
+        font-size: 5rem; /* Very large title for large screens */
+    }
+
+    .movie-description {
+        font-size: 1.5rem; /* Larger description text */
+    }
+
+    .movie-rating {
+        font-size: 1.5rem; /* Larger rating font size */
+    }
+}

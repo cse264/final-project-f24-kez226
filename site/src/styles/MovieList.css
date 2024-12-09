@@ -1,0 +1,185 @@
+/* MovieList.css */
+/* Center and style the title of the movie list */
+.movie-list h2 {
+    margin-left: 100px;
+    font-size: 2rem; /* Increase the font size for emphasis */
+    font-weight: bold; /* Make it bold */
+    margin-bottom: 20px; /* Add space below the title */
+    color: #e50914; /* Highlight color for the title (Netflix-inspired red) */
+}
+
+/* Movie items grid container */
+.movie-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Flexible grid with minimum item size */
+    gap: 20px; /* Space between items */
+    justify-content: center; /* Center the grid within the container */
+    padding: 0 40px; /* Add left and right padding for gaps */
+    margin: 0 auto; /* Center the grid container */
+    max-width: 1200px; /* Optional: Set a maximum width for the entire grid */
+}
+
+/* Movie item container */
+.movie-item {
+    position: relative;
+    width: 100%;
+    max-width: 220px; /* Limit the size of each movie poster */
+    aspect-ratio: 2/3; /* Maintain the poster's aspect ratio */
+    border-radius: 8px;
+    background-color: #222;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+/* Hover effect - lift */
+.movie-item:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Shadow effect */
+}
+
+/* Movie poster image */
+.movie-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure the poster covers the container */
+    border-radius: 8px;
+}
+
+/* Hover details container */
+.movie-hover-details {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    text-align: center;
+    gap: 1px; /* Add spacing between items */
+}
+
+/* Show hover details on hover */
+.movie-item:hover .movie-hover-details {
+    opacity: 1;
+    pointer-events: auto; /* Allow interactions on hover */
+}
+
+/* Hover details text styling */
+.movie-hover-details h3 {
+    font-size: 1.1rem; /* Slightly smaller font for the title */
+    margin-bottom: 10px;
+}
+
+.movie-hover-details p {
+    font-size: 0.9rem;
+    margin: 5px 0;
+    line-height: 1.4;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .movie-items {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjust for smaller screens */
+        padding: 0 20px; /* Reduce padding on smaller screens */
+    }
+
+    .movie-item {
+        max-width: 180px; /* Adjust the max width for smaller screens */
+    }
+
+    .movie-hover-details h3 {
+        font-size: 1rem; /* Smaller title font for smaller screens */
+    }
+
+    .movie-hover-details p {
+        font-size: 0.8rem; /* Smaller details font */
+    }
+}
+
+/* Expanded movie window, covering the full viewport */
+.expanded-movie-window {
+    position: fixed; /* Fixes it to the viewport */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8); /* Dark transparent background */
+    color: #fff;
+    display: flex;
+    align-items: center; /* Align content to the center vertically */
+    justify-content: center; /* Center horizontally */
+    z-index: 1000;
+    overflow: auto; /* Enable scrolling if content exceeds the modal's height */
+}
+
+/* Expanded movie content container */
+.expanded-movie-content {
+    background: #502626;
+    border-radius: 10px;
+    padding: 20px;
+    width: 80%;
+    max-width: 800px;
+    max-height: 90vh; /* Limit height to 90% of the viewport */
+    overflow-y: auto; /* Enable vertical scrolling for content inside */
+    display: flex;
+    flex-direction: column; /* Stack the children vertically */
+    justify-content: flex-start; /* Align content at the top */
+    align-items: center; /* Center all children horizontally */
+    position: relative; /* For absolute positioning of the close button */
+}
+
+/* Movie poster inside the modal */
+.expanded-movie-poster {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* Close button style */
+.close-button {
+    background: #7a080d;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    position: absolute; /* Position it absolutely within the expanded content */
+    top: 20px; /* Distance from the top */
+    left: 20px; /* Distance from the left */
+}
+
+/* Close button hover effect */
+.close-button:hover {
+    background: #b71c1c;
+}
+
+.expanded-movie-content h2 {
+    margin: 0 auto;
+}
+
+/* Reviews section */
+.movie-reviews {
+    width: 100%;
+    margin-top: 20px;
+    background: #000000;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+/* Optional: Add responsiveness for small screens */
+@media (max-width: 768px) {
+    .expanded-movie-content {
+        width: 90%; /* Make modal smaller on small screens */
+        padding: 10px;
+    }
+
+    .expanded-movie-poster {
+        max-width: 90%;
+    }
+}

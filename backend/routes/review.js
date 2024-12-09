@@ -13,17 +13,51 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET all reviews by movieID
+router.get('/:movieID', async (req, res) => {
+    const movieID = req.params.movieID
+    try {
+        const reviews = await Review.find({movieID: movieID});
+        res.json(reviews);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// GET all reviews by userID
+router.get('/:userID', async (req, res) => {
+    const userID = req.params.userID
+    try {
+        const reviews = await Review.find({userID: userID});
+        res.json(reviews);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// GET all reviews by userID and movieID
+router.get('/:userID&movieID', async (req, res) => {
+    const userID = req.params.userID
+    const movieID = req.params.movieID
+    try {
+        const reviews = await Review.find({userID: userID, movieID: movieID});
+        res.json(reviews);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 // POST create a new review
 router.post('/', async (req, res) => {
-    const { movieTitle, reviewBody, reviewRating } = req.body;
+    const { userID, movieID, reviewBody, reviewRating} = req.body;
 
     // Validate input before creating review
-    if (!movieTitle || !reviewBody || !reviewRating) {
-        return res.status(400).json({ message: 'Movie title, review body, and rating are required.' });
+    if (!userID || !movieID || !reviewBody || !reviewRating) {
+        return res.status(400).json({ message: 'User ID, movie, review, and rating are required.' });
     }
 
     const review = new Review({
-        movieTitle, reviewBody, reviewRating
+        userID, movieID, reviewBody, reviewRating
     });
 
     try {
@@ -34,13 +68,13 @@ router.post('/', async (req, res) => {
     }
 });
 
-// PUT to update a review by movieTitle
-router.put('/', async (req, res) => {
-    const { movieTitle, reviewBody, reviewRating } = req.body;
+router.put('/', async (req,res) => {
+    const userID = req.body.userID;
+    const movieID = req.body.movieID;
 
-    // Validate required inputs
-    if (!movieTitle) {
-        return res.status(400).json({ message: 'Movie title is required to update review' });
+    //Validate require inputs
+    if (!userID || !movieID){
+        return res.status(400).json({message: 'User and movie IDs are required to update review'})
     }
 
     const update = {};
@@ -57,8 +91,8 @@ router.put('/', async (req, res) => {
 
     try {
         const updatedReview = await Review.updateOne(
-            { movieTitle }, // Only filter by movieTitle
-            { $set: update }
+            {userID: userID, movieID: movieID}, 
+            {$set: update}
         );
         if (updatedReview.modifiedCount > 0) {
             res.status(200).json({ message: 'Review updated.' });
@@ -68,26 +102,124 @@ router.put('/', async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
-});
+})
 
-// DELETE a review by review ID
-router.delete('/', async (req, res) => {
-    const { _id } = req.body;
+//delete single review
+router.delete('/', async(req,res) => {
+    const { _id, userID } = req.body;
 
-    if (!_id) {
-        return res.status(400).json({ message: 'Review ID required to delete review' });
+    if (!userID || !_id){
+        return res.status(400).json({message: 'User and review IDs required to delete review'})
     }
 
-    try {
-        const deletedReview = await Review.deleteOne({ _id });
-        if (deletedReview.deletedCount > 0) {
-            res.status(200).json({ message: 'Review deleted.' });
-        } else {
-            res.status(404).json({ message: 'No review found to delete.' });
+    //add smth to check if the user is an admin
+    let user = await User.findOne({userID: userID})
+    if (user.accountType === "admin"){
+        try {
+            const deletedReview = await Review.deleteOne(
+                {_id: _id}
+            );
+            if (deletedReview.deletedCount != 0)
+                res.status(201).json({message: "Review deleted by admin."});
+            else
+                res.status(201).json({message: "No review found."});
+        } catch (err) {
+            res.status(500).json({ message: err.message });
         }
-    } catch (err) {
-        res.status(500).json({ message: err.message });
     }
-});
+    else{
+        try {
+            const deletedReview = await Review.deleteOne(
+                {userID: userID, _id: _id}
+            );
+            if (deletedReview.deletedCount != 0)
+                res.status(201).json({message: "Review deleted."});
+            else
+                res.status(201).json({message: "No review found."});
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+    }
+})
+
+//below routes need a way to check if the userId specified is the actual user
+
+
+//delete all user reviews
+router.delete('/:userID', async(req,res) => {
+    const userID = req.params
+    const currUser = req.body.userID
+    if (userID == currUser){
+        try {
+            const deletedReview = await Review.delete(
+                {userID: userID}
+            );
+            if (deletedReview.deletedCount != 0)
+                res.status(201).json({message: "Reviews deleted."});
+            else
+                res.status(201).json({message: "No review found."});
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+    }
+    else{
+        let user = await User.findOne({userID: userID})
+        if (user.accountType === "admin"){
+            try {
+                const deletedReview = await Review.delete(
+                    {userID: userID}
+                );
+                if (deletedReview.deletedCount != 0)
+                    res.status(201).json({message: "Reviews deleted."});
+                else
+                    res.status(201).json({message: "No review found."});
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        }
+        else{
+            res.status(400).json({message: "Can't delete another user's reviews"})
+        }
+    }
+})
+
+//delete all movieID reviews by user
+router.delete('/:userID&movieID', async(req,res) => {
+    const userID = req.params.userID
+    const movieID = req.params.movieID
+    const currUser = req.body.userID
+    if (userID == currUser){
+        try {
+            const deletedReview = await Review.delete(
+                {userID: userID, movieID: movieID}
+            );
+            if (deletedReview.deletedCount != 0)
+                res.status(201).json({message: "Reviews deleted."});
+            else
+                res.status(201).json({message: "No review found."});
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+    }
+    else{
+        let user = await User.findOne({userID: userID})
+        if (user.accountType === "admin"){
+            try {
+                const deletedReview = await Review.delete(
+                    {userID: userID, movieID: movieID}
+                );
+                if (deletedReview.deletedCount != 0)
+                    res.status(201).json({message: "Reviews deleted."});
+                else
+                    res.status(201).json({message: "No review found."});
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        }
+        else{
+            res.status(400).json({message: "Can't delete another user's reviews"})
+        }
+    }
+})
 
 module.exports = router;
