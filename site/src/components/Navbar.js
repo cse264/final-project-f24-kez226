@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import './Navbar.css'; // Assuming you already have your styles here
+import '../styles/Navbar.css'; // Assuming you already have your styles here
 
 function Navbar() {
     const homeRef = useRef(null);
@@ -11,7 +11,7 @@ function Navbar() {
         ref.current.scrollIntoView({ behavior: 'smooth' });
     };
 
-    return (
+    return ( 
         <div className="nav-wrapper">
             <div className="container">
                 <div className="nav">

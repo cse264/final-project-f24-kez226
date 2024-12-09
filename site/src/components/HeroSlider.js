@@ -1,7 +1,7 @@
 import React from 'react';
 import Slider from 'react-slick';
 import { getImageUrl } from '../api/tmdb';
-import './HeroSlider.css';
+import '../styles/HeroSlider.css';
 import StarIcon from '@mui/icons-material/Star'; // For ratings
 import FavoriteIcon from '@mui/icons-material/Favorite'; // For popularity
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'; // For vote count
@@ -15,7 +15,7 @@ function HeroSlider({ movies }) {
         slidesToShow: 1,               // Number of slides visible
         slidesToScroll: 1,             // Number of slides to scroll
         autoplay: true,                // Enable autoplay
-        autoplaySpeed: 5000,           // Speed between auto transitions (in milliseconds)
+        autoplaySpeed: 2000,           // Speed between auto transitions (in milliseconds)
         pauseOnHover: true,            // Pause autoplay when hovering over the slider
         fade: true,                    // Enable fade transition (optional, more stylish)
     };

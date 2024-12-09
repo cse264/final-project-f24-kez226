@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
-import './Users.css';
+import '../styles/Users.css';
 
 const Users = ({ setUserID }) => {  // Accept setUserID from App.js
     const [users, setUsers] = useState([]);
@@ -121,7 +121,7 @@ const Users = ({ setUserID }) => {  // Accept setUserID from App.js
 
     return (
         <div className="users-container">
-            <h1 className="users-title">Users List</h1>
+            {/* <h1 className="users-title">Users List</h1>
             <ul className="users-list">
                 {users.map(user => (
                     <li key={user._id} className="user-item">
@@ -131,7 +131,7 @@ const Users = ({ setUserID }) => {  // Accept setUserID from App.js
                         </div>
                     </li>
                 ))}
-            </ul>
+            </ul> */}
 
               {/* Form Section for Creating New User */}
               <Box component="form" onSubmit={handleSubmit} sx={{ marginBottom: 2 }}>
@@ -203,9 +203,9 @@ const Users = ({ setUserID }) => {  // Accept setUserID from App.js
                     onChange={e => setLoginCredentials({ ...loginCredentials, password: e.target.value })}
                 />
                 <Button type="submit" variant="contained" sx={{
-                    backgroundColor: 'green',
+                    backgroundColor: 'red',
                     '&:hover': {
-                        backgroundColor: '#388e3c',
+                        backgroundColor: '#b71c1c',
                     },
                     marginTop: 2
                 }}>

@@ -94,11 +94,12 @@ router.put('/', async (req,res) => {
             {userID: userID, movieID: movieID}, 
             {$set: update}
         );
-        if (updatedReview.modifiedCount > 0) {
-            res.status(200).json({ message: 'Review updated.' });
-        } else {
-            res.status(404).json({ message: 'No review found to update.' });
+
+        if (!updatedReview) {
+            return res.status(404).json({ message: 'Review not found.' });
         }
+
+        res.status(200).json(updatedReview); // Return the updated review
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

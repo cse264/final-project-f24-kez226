@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Button, TextField, Typography, Box } from '@mui/material';
-import './Reviews.css';
-import { getImageUrl } from '../api/tmdb'; // Assuming you have this function to fetch movie poster URLs
+import '../styles/Reviews.css';
 
-const Reviews = () => {
+const Reviews = ({ movieId }) => {
     const [reviews, setReviews] = useState([]);
     const [newReview, setNewReview] = useState({
-        userID: '',
+        userID: '', 
+        movieId: movieId, // Pass movieId here to associate with the movie
         movieTitle: '',
         reviewBody: '',
         reviewRating: ''
     });
     const [loading, setLoading] = useState(true);
 
-    // Fetch all reviews when component mounts
+    // Fetch reviews for the specific movie
     useEffect(() => {
         setLoading(true);
-        fetch('http://localhost:3000/api/reviews')  // Fetching all reviews
+        fetch(`http://localhost:3000/api/reviews/${movieId}`)  // Fetch reviews for this movie
             .then(response => response.json())
             .then(data => {
                 setReviews(data);
@@ -26,7 +26,7 @@ const Reviews = () => {
                 console.error('Error fetching reviews:', error);
                 setLoading(false);
             });
-    }, []); // Empty dependency array ensures this only runs once on mount
+    }, [movieId]); // Re-fetch when movieId changes
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -46,8 +46,8 @@ const Reviews = () => {
         })
             .then(response => response.json())
             .then(data => {
-                setReviews([...reviews, data]);
-                setNewReview({ userID: '', movieTitle: '', reviewBody: '', reviewRating: '' });
+                setReviews([...reviews, data]); // Add the new review to the list
+                setNewReview({ userID: '', movieTitle: '', reviewBody: '', reviewRating: '' }); // Reset the form
             })
             .catch(error => console.error('Error submitting review:', error));
     };
@@ -61,20 +61,19 @@ const Reviews = () => {
             body: JSON.stringify({ _id: reviewId, userID: '...' }) // Replace with actual userID
         })
             .then(response => response.json())
-            .then(data => {
-                setReviews(reviews.filter(review => review._id !== reviewId));
+            .then(() => {
+                setReviews(reviews.filter(review => review._id !== reviewId)); // Remove deleted review from state
             })
             .catch(error => console.error('Error deleting review:', error));
     };
 
-    // Show loading message until reviews are fetched
     if (loading) return <div>Loading reviews...</div>;
 
     return (
         <Box className="reviews-container" sx={{ margin: '20px', backgroundColor: '#000', color: '#fff' }}>
             {/* Reviews Section */}
             <Typography variant="h6" gutterBottom>
-                All Reviews
+                All Reviews for {newReview.movieTitle}
             </Typography>
 
             {/* Display Existing Reviews */}
@@ -91,25 +90,13 @@ const Reviews = () => {
                 ))}
             </Box>
 
+            {/* Review Form for New Review */}
             <Box>
-                {/* Form for Creating New Review */}
-                <Typography
-                    variant="h6"
-                    gutterBottom
-                    sx={{ color: '#fff' }} // White color for the title
-                >
+                <Typography variant="h6" gutterBottom sx={{ color: '#fff' }}>
                     Create a New Review
                 </Typography>
 
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 2,
-                        backgroundColor: 'transparent', // Make Box transparent
-                        color: '#fff' // Set text color to white
-                    }}
-                >
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, backgroundColor: 'transparent', color: '#fff' }}>
                     <TextField
                         label="Movie Title"
                         name="movieTitle"
@@ -117,29 +104,11 @@ const Reviews = () => {
                         onChange={handleInputChange}
                         variant="outlined"
                         sx={{
-                            backgroundColor: 'transparent', // Transparent background
-                            color: '#fff', // White text color
-                            borderColor: '#fff', // White border color
-                            '& .MuiInputLabel-root': {
-                                color: '#fff', // White label color
-                            },
-                            '& .MuiOutlinedInput-root': {
-                                '& fieldset': {
-                                    borderColor: '#fff', // White border
-                                },
-                                '&:hover fieldset': {
-                                    borderColor: '#fff', // White border on hover
-                                },
-                                '&.Mui-focused fieldset': {
-                                    borderColor: '#fff', // White border when focused
-                                },
-                                '& input': {
-                                    color: '#fff', // White text color in input field
-                                },
-                            },
+                            backgroundColor: 'transparent', color: '#fff', borderColor: '#fff',
+                            '& .MuiInputLabel-root': { color: '#fff' },
+                            '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#fff' }, '&:hover fieldset': { borderColor: '#fff' } }
                         }}
                     />
-
                     <TextField
                         label="Review Body"
                         name="reviewBody"
@@ -149,32 +118,11 @@ const Reviews = () => {
                         multiline
                         rows={4}
                         sx={{
-                            backgroundColor: 'transparent', // Transparent background
-                            color: '#fff', // White text color  
-                            borderColor: '#fff', // White border color
-                            '& .MuiInputLabel-root': {
-                                color: '#fff', // White label color
-                            },
-                            '& .MuiOutlinedInput-root': {
-                                '& fieldset': {
-                                    borderColor: '#fff', // White border
-                                },
-                                '&:hover fieldset': {
-                                    borderColor: '#fff', // White border on hover
-                                },
-                                '&.Mui-focused fieldset': {
-                                    borderColor: '#fff', // White border when focused
-                                },
-                                '& textarea': {
-                                    color: '#fff', // White text color for multiline (textarea)
-                                },
-                                '& input': {
-                                    color: '#fff', // White text color for input fields
-                                },
-                            },
+                            backgroundColor: 'transparent', color: '#fff', borderColor: '#fff',
+                            '& .MuiInputLabel-root': { color: '#fff' },
+                            '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#fff' }, '&:hover fieldset': { borderColor: '#fff' } }
                         }}
                     />
-
                     <TextField
                         label="Review Rating"
                         name="reviewRating"
@@ -182,26 +130,9 @@ const Reviews = () => {
                         onChange={handleInputChange}
                         variant="outlined"
                         sx={{
-                            backgroundColor: 'transparent', // Transparent background
-                            color: '#fff', // White text color  
-                            borderColor: '#fff', // White border color
-                            '& .MuiInputLabel-root': {
-                                color: '#fff', // White label color
-                            },
-                            '& .MuiOutlinedInput-root': {
-                                '& fieldset': {
-                                    borderColor: '#fff', // White border
-                                },
-                                '&:hover fieldset': {
-                                    borderColor: '#fff', // White border on hover
-                                },
-                                '&.Mui-focused fieldset': {
-                                    borderColor: '#fff', // White border when focused
-                                },
-                                '& input': {
-                                    color: '#fff', // White text color in input field
-                                },
-                            },
+                            backgroundColor: 'transparent', color: '#fff', borderColor: '#fff',
+                            '& .MuiInputLabel-root': { color: '#fff' },
+                            '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#fff' }, '&:hover fieldset': { borderColor: '#fff' } }
                         }}
                     />
 
@@ -210,16 +141,10 @@ const Reviews = () => {
                         color="primary"
                         onClick={handleSubmitReview}
                         sx={{
-                            marginTop: 2,
-                            backgroundColor: 'transparent',  // Transparent button background
-                            color: '#fff',  // White text color
-                            borderColor: '#fff',  // White border for the button
-                            '&:hover': {
-                                backgroundColor: '#fff',  // White background on hover
-                                color: '#000',  // Black text color on hover
-                            },
+                            marginTop: 2, backgroundColor: 'transparent', color: '#fff',
+                            borderColor: '#fff', '&:hover': { backgroundColor: '#fff', color: '#000' }
                         }}
-                    >   
+                    >
                         Submit Review
                     </Button>
                 </Box>
