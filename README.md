@@ -1,30 +1,27 @@
 # Final Project
 
-## Due Last day of Class
-## First report due Monday Oct 28, 2024
+## PopCorn Path
+## Ivory Le (Frontend), Bernice Wong (Backend), Ken Zhu (Backend)
 
-### Build a web app in a team of 4-5
+### With our amazing definitely not Netflix dupe application, you can find your popcorn filled path to great movies!
+
+To install our project, simply clone our code and npm install. 
+
+To connect to our database, use the following uri in a .env file in the backend folder
+MONGODB_URI = mongodb+srv://kez226:JdA7rk4PQr4DIVQb@finalproject.w7qwd.mongodb.net/?retryWrites=true&w=majority&appName=FinalProject
+
+To connect the frontend, use the following API key in a .env file in site folder
+REACT_APP_TMDB_API_KEY=cefe3c4f5fc23deb5a31c524163edcce
+
+### Now you are ready to hop on the PopCorn Path! Simply call npm run in your terminal
+
+To test user capabilities, navigate your way to our login screen and create a new user.
+To test admin capabilities, use the login credentials person1@gmail.com and password person1.
+
 
 ### Requirements:
-* Must have user accounts and different user roles (like user/Admin, free/paid, etc)
-* Must use a database (you choose)
-* Must have interactive UI (of any kind)
-* Must use a library or framework not discussed/used in class
-* Must use an outside REST API in some way (Outside as in external, like the Reddit API, etc)
-
-* Feel free to build off other projects and frameworks. For example [https://github.com/sahat/hackathon-starter] is a great starter project that you can build on top of. 
-
-### Instructions
-Build your team and write a document describing your application to me by Monday Oct 28, 2024. Email this document to me and the TA for this course (Xinhui Chen xic721@lehigh.edu)  I will approve your web application idea. In your paper, include:
-* the name of your application
-* Name and roles of all your team members
-* its functionality (how does it meet each of the requirements listed above - list each requirement along with your will fulfill it)
-* user story/use case (what happens when a user visits your application, what can they do, etc)
-* technical design (what is your tech stack)
-
-
-### Final deliverable due end of the semester:
-* Codebase in Github Repo
-* README describing your project, with all the information outlined above (team members, application name, description, etc). You will also include detailed instructions of how to install and run your application, and what API keys, databases, etc are needed to run your application.
-* Final Presentation and Demo
-  * You will prepare a 5 minute presentation and demo of your application in class during the last week of classes
+* Must have user accounts and different user roles: user/Admin
+* Must use a database: MongoDB Atlas
+* Must have interactive UI 
+* Must use a library or framework not discussed/used in class: mongoose
+* Must use an outside REST API in some way: https://developer.themoviedb.org/reference/intro/getting-started
