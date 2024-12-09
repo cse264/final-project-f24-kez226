@@ -77,27 +77,28 @@ router.put('/', async (req,res) => {
         return res.status(400).json({message: 'User and movie IDs are required to update review'})
     }
 
-    const update = {}
+    const update = {};
 
-    if (req.body.reviewRating){
-        update.reviewRating = req.body.reviewRating
+    if (reviewRating) {
+        update.reviewRating = reviewRating;
     }
-    if (req.body.reviewBody){
-        update.reviewBody = req.body.reviewBody
+    if (reviewBody) {
+        update.reviewBody = reviewBody;
     }
     if (Object.keys(update).length === 0) {
-        return res.status(400).json({message: "No valid fields to update."})
-      }
+        return res.status(400).json({ message: 'No valid fields to update.' });
+    }
 
     try {
         const updatedReview = await Review.updateOne(
             {userID: userID, movieID: movieID}, 
             {$set: update}
         );
-        if (updatedReview.modifiedCount != 0)
-            res.status(201).json({message: "Review updated."});
-        else
-            res.status(201).json({message: "No review found."})
+        if (updatedReview.modifiedCount > 0) {
+            res.status(200).json({ message: 'Review updated.' });
+        } else {
+            res.status(404).json({ message: 'No review found to update.' });
+        }
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

@@ -1,0 +1,18 @@
+.reviews-container {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #000; /* Dark theme */
+    color: #fff; /* White text */
+}
+
+.reviews-container .movie-poster {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.reviews-container .movie-poster img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
