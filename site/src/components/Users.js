@@ -17,8 +17,27 @@ const Users = ({ setUserID }) => {
     const [error, setError] = useState('');
     const [displayUser, setDisplayUser] = useState(false);  // State to control user list display
 
-    // Function to fetch users from the API
+    useEffect(() => {
+        // Fetch users
+        fetch('http://localhost:3000/api/users', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                setUsers(data);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Error fetching users:', error);
+                setLoading(false);
+            });
+    }, []);
+    
     const fetchUsers = () => {
+        setLoading(true); // Set loading to true before refetching
         fetch('http://localhost:3000/api/users', {
             method: 'GET',
             headers: {
@@ -35,11 +54,6 @@ const Users = ({ setUserID }) => {
                 setLoading(false);
             });
     };
-
-    // Fetch users when the component mounts or when displayUser changes
-    useEffect(() => {
-        fetchUsers();
-    }, []);
 
     // Handle input changes for creating new user
     const handleNewUserChange = (e) => {
@@ -80,10 +94,8 @@ const Users = ({ setUserID }) => {
             if (response.ok) {
                 setUserID(data.userID); // Store userID on successful login
                 setError('');
-                console.log(data.accountType)
                 if (data.accountType === 'admin') {
                     setDisplayUser(true);  // Show users list if admin
-                    fetchUsers();  // Refetch users after successful login
                 }
                 alert('Login successful!');
             } else {
@@ -127,12 +139,35 @@ const Users = ({ setUserID }) => {
         }
     };
 
+    // Handle user deletion
+    const handleDelete = async (userID) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/users/1/${userID}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                // Remove the deleted user from the UI
+                setUsers(users.filter(user => user._id !== userID));
+                fetchUsers(); // This will re-trigger the fetch users logic
+                alert('User deleted successfully');
+            } else {
+                alert('Failed to delete user');
+            }
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            alert('Error deleting user');
+        }
+    };
+
     if (loading) return <div className="loading">Loading...</div>;
 
     return (
         <div className="users-container">
             
-
             {/* Form Section for Creating New User */}
             <Box component="form" onSubmit={handleSubmit} sx={{ marginBottom: 2 }}>
                 <h2 className="centered-text">Create Your Account</h2>
@@ -221,11 +256,20 @@ const Users = ({ setUserID }) => {
                                     <p className="user-name">{user.name}</p>
                                     <p className="user-email">{user.email}</p>
                                 </div>
+                                <Button
+                                    onClick={() => handleDelete(user.userID)}
+                                    variant="contained"
+                                    color="error"
+                                    sx={{ marginLeft: 2 }}
+                                >
+                                    Delete
+                                </Button>
                             </li>
                         ))}
                     </ul>
                 </div>
             )}
+
         </div>
     );
 };
