@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET all reviews by movieID
-router.get('/?movieID', async (req, res) => {
+router.get('/:movieID', async (req, res) => {
     const movieID = req.params.movieID
     try {
         const reviews = await Review.find({movieID: movieID});
@@ -25,7 +25,7 @@ router.get('/?movieID', async (req, res) => {
 });
 
 // GET all reviews by userID
-router.get('/?userID', async (req, res) => {
+router.get('/:userID', async (req, res) => {
     const userID = req.params.userID
     try {
         const reviews = await Review.find({userID: userID});
@@ -36,7 +36,7 @@ router.get('/?userID', async (req, res) => {
 });
 
 // GET all reviews by userID and movieID
-router.get('/?userID&movieID', async (req, res) => {
+router.get('/:userID&movieID', async (req, res) => {
     const userID = req.params.userID
     const movieID = req.params.movieID
     try {
@@ -145,7 +145,7 @@ router.delete('/', async(req,res) => {
 
 
 //delete all user reviews
-router.delete('/?userID', async(req,res) => {
+router.delete('/:userID', async(req,res) => {
     const userID = req.params
     const currUser = req.body.userID
     if (userID == currUser){
@@ -183,7 +183,7 @@ router.delete('/?userID', async(req,res) => {
 })
 
 //delete all movieID reviews by user
-router.delete('/?userID&movieID', async(req,res) => {
+router.delete('/:userID&movieID', async(req,res) => {
     const userID = req.params.userID
     const movieID = req.params.movieID
     const currUser = req.body.userID
