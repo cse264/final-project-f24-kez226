@@ -10,7 +10,7 @@ To install our project, simply clone our code and npm install.
 To connect to our database, use the following uri in a .env file in the backend folder
 MONGODB_URI = mongodb+srv://kez226:JdA7rk4PQr4DIVQb@finalproject.w7qwd.mongodb.net/?retryWrites=true&w=majority&appName=FinalProject
 
-To connect the frontend, use the following API key in a .env file in site folder
+To connect the frontend, use the following API key in a .env file in the site folder
 REACT_APP_TMDB_API_KEY=cefe3c4f5fc23deb5a31c524163edcce
 
 ### Now you are ready to hop on the PopCorn Path! Simply call npm run in your terminal
